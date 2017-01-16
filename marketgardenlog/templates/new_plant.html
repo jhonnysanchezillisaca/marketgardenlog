@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}New Plant{% endblock %}
+{% block content %}
+    <h1>New plant in garden {{garden_id}}</h1>
+    <p>Creating a plant</p>
+    <form method="post" id="new_plant">
+        <label for="name">Name: </label>
+        <input type="text" name="name">
+        <label for="type">Type: </label>
+        <input type="text" name="type">
+        <label for="comments">Comments: </label>
+        <textarea name="comments" form="new_plant" rows="4" cols="80"></textarea>
+        <a href="#">Cancel</a>
+        <input type="submit" name="Create" value="Create">
+    </form>
+{% endblock %}
