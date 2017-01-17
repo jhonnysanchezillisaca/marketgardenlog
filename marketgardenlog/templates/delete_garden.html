@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Delete Garden {{ garden_id }}{% endblock %}
+{% block title %}Delete Garden {{ garden.id }}{% endblock %}
 {% block content %}
-    <h1>Delete Garden {{ garden_id }}</h1>
-    <p>Are you sure you want to delete garden {{ garden_id }}?</p>
+    <h1>Delete Garden {{ garden.id }}</h1>
+    <p>Are you sure you want to delete garden {{ garden.id }}?</p>
     <form method="post">
         <a href="#">Cancel</a>
         <input type="submit" name="Delete" value="Delete">

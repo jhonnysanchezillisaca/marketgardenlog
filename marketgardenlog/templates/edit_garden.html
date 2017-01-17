@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Edit Garden {{ garden_id }}{% endblock %}
+{% block title %}Edit Garden {{ garden.id }}{% endblock %}
 {% block content %}
-    <h1>Edit Garden {{ garden_id }}</h1>
-    <p>Editing garden {{ garden_id }}</p>
+    <h1>Edit Garden {{ garden.id }}</h1>
+    <p>Editing garden {{ garden.id }}</p>
     <form method="post">
         <label for="name">Name: </label>
         <input type="text" name="name" value="{# garden.name #}">

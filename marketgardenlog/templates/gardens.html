@@ -3,4 +3,8 @@
 {% block content %}
     <h1>Gardens</h1>
     <p>Shows some of the gardens</p>
+    {% for garden in gardens %}
+        <h3>{{ garden.name }}</h3>
+        <small>{{ garden.garden_type }}</small>
+    {% endfor %}
 {% endblock %}
