@@ -6,6 +6,8 @@ from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Garden, Plant, User
 
+import json
+
 
 app = Flask(__name__)
 
@@ -15,8 +17,21 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+# JSON APIs
+@app.route('/gardens/JSON')
+def gardensJSON():
+    gardens = session.query(Garden).all()
+    return jsonify(Gardens=[i.serialize for i in gardens])
+
+
+@app.route('/gardens/<int:garden_id>/JSON')
+def gardenPlantsJSON(garden_id):
+    plants = session.query(Plant).filter_by(garden_id=garden_id).all()
+    return jsonify(Plants=[i.serialize for i in plants])
+
+
 @app.route('/')
-@app.route('/gardens')
+@app.route('/gardens/')
 def showGardens():
     gardens = session.query(Garden).order_by(asc(Garden.created))
     return render_template('gardens.html', gardens=gardens)
@@ -25,10 +40,11 @@ def showGardens():
 @app.route('/gardens/<int:garden_id>/')
 def showGarden(garden_id):
     garden = session.query(Garden).filter_by(id=garden_id).one()
-    return render_template('garden.html', garden=garden)
+    plants = session.query(Plant).filter_by(garden_id=garden_id).all()
+    return render_template('garden.html', garden=garden, plants=plants)
 
 
-@app.route('/gardens/<int:garden_id>/edit', methods=['GET', 'POST'])
+@app.route('/gardens/<int:garden_id>/edit/', methods=['GET', 'POST'])
 def editGarden(garden_id):
     garden = session.query(Garden).filter_by(id=garden_id).one()
     if request.method == 'POST':
@@ -39,15 +55,14 @@ def editGarden(garden_id):
             garden.comments = request.form['comments']
             flash('Garden Successfully Edited %s' %
                   garden.name)
-            return redirect(url_for('showGarden'), garden_id=garden_id)
+            return redirect(url_for('showGarden', garden_id=garden_id))
     else:
         return render_template('edit_garden.html', garden=garden)
 
 
-@app.route('/gardens/<int:garden_id>/delete', methods=['GET', 'POST'])
+@app.route('/gardens/<int:garden_id>/delete/', methods=['GET', 'POST'])
 def deleteGarden(garden_id):
     garden = session.query(Garden).filter_by(id=garden_id).one()
-
     if request.method == 'POST':
         session.delete(garden)
         session.commit()
@@ -57,8 +72,9 @@ def deleteGarden(garden_id):
         return render_template('delete_garden.html', garden=garden)
 
 
-@app.route('/gardens/new', methods=['GET', 'POST'])
+@app.route('/gardens/new/', methods=['GET', 'POST'])
 def newGarden():
+    login_session['user_id'] = 1
     if request.method == 'POST':
         new_garden = Garden(name=request.form['name'],
                             garden_type=request.form['type'],
@@ -68,13 +84,14 @@ def newGarden():
         session.add(new_garden)
         session.commit()
         flash('New garden %s Successfully Created' % (new_garden.name))
-        return redirect(url_for('showGarden', garden_id=garden.id))
+        return redirect(url_for('showGarden', garden_id=new_garden.id))
     else:
         return render_template('new_garden.html')
 
 
-@app.route('/gardens/<int:garden_id>/newplant', methods=['GET', 'POST'])
+@app.route('/gardens/<int:garden_id>/newplant/', methods=['GET', 'POST'])
 def newPlant(garden_id):
+    login_session['user_id'] = 1
     if request.method == 'POST':
         new_plant = Plant(name=request.form['name'],
                           plant_type=request.form['type'],
@@ -83,27 +100,43 @@ def newPlant(garden_id):
                           user_id=login_session['user_id'])
         session.add(new_plant)
         session.commit()
+        return redirect(url_for('showGarden', garden_id=garden_id))
     return render_template('new_plant.html', garden_id=garden_id)
 
 
-@app.route('/gardens/<int:garden_id>/<int:plant_id>/edit',
-           methods=['POST', 'GET'])
+@app.route('/gardens/<int:garden_id>/<int:plant_id>/edit/',
+           methods=['GET', 'POST'])
 def editPlant(garden_id, plant_id):
+    plant = session.query(Plant).filter_by(id=plant_id).one()
     if request.method == 'POST':
-        plant = session.query(Plant).filter_by(id=plant_id).one()
-        plant.name = request.form['name']
-        plant.plant_type = request.form['type']
+        print "Inside POST"
+        if request.form['name']:
+            print "name correct"
+            plant.name = request.form['name']
+        if request.form['type']:
+            print "type correct"
+            plant.plant_type = request.form['type']
+        else:
+            # flash('Name and type are required')
+            print "Inside post incorrect"
+            return redirect(url_for('editPlant', garden_id=garden_id,
+                            plant_id=plant.id))
         plant.comments = request.form['comments']
+        session.add(plant)
+        session.commit()
+        print "Session comited"
+        print url_for('showGarden', garden_id=garden_id)
         return redirect(url_for('showGarden', garden_id=garden_id))
+
     else:
         return render_template('edit_plant.html', plant=plant)
 
 
-@app.route('/gardens/<int:garden_id>/<int:plant_id>/delete',
+@app.route('/gardens/<int:garden_id>/<int:plant_id>/delete/',
            methods=['GET', 'POST'])
 def deletePlant(garden_id, plant_id):
-    if requests.method == 'POST':
-        plant = session.query(Plant).filter_by(id=plant_id).one()
+    plant = session.query(Plant).filter_by(id=plant_id).one()
+    if request.method == 'POST':
         session.delete(plant)
         session.commit()
         return redirect(url_for('showGarden', garden_id=garden_id))

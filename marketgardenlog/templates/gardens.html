@@ -3,8 +3,11 @@
 {% block content %}
     <h1>Gardens</h1>
     <p>Shows some of the gardens</p>
+    <div class="gardens_actions">
+        <a href="{{ url_for('newGarden')}}">Create a garden</a>
+    </div>
     {% for garden in gardens %}
-        <h3>{{ garden.name }}</h3>
+        <h3><a href="{{ url_for('showGarden', garden_id=garden.id)}}">{{ garden.name }}</a></h3>
         <small>{{ garden.garden_type }}</small>
     {% endfor %}
 {% endblock %}

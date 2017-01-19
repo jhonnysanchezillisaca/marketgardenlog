@@ -3,16 +3,16 @@
 {% block content %}
     <h1>Edit Garden {{ garden.id }}</h1>
     <p>Editing garden {{ garden.id }}</p>
-    <form method="post">
+    <form method="post" id="garden_edit">
         <label for="name">Name: </label>
-        <input type="text" name="name" value="{# garden.name #}">
+        <input type="text" name="name" value="{{ garden.name }}">
         <label for="type">Type: </label>
-        <input type="text" name="type" value="{# garden.type #}">
+        <input type="text" name="type" value="{{ garden.garden_type }}">
         <label for="location">Location: </label>
-        <input type="text" name="location" value="{# garden.location #}">
+        <input type="text" name="location" value="{{ garden.location }}">
         <label for="comments">Comments: </label>
-        <textarea name="comments" form="new_plant" rows="4" cols="80"></textarea>
-        <a href="#">Cancel</a>
+        <textarea name="comments" form="garden_edit" rows="4" cols="80"></textarea>
+        <a href="{{url_for('showGarden', garden_id=garden.id)}}">Cancel</a>
         <input type="submit" name="Edit" value="Edit">
     </form>
 {% endblock %}

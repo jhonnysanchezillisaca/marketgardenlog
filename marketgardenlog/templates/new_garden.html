@@ -3,7 +3,7 @@
 {% block content %}
     <h1>New Garden</h1>
     <p>Creating a garden</p>
-    <form method="post">
+    <form method="post" id="garden_new">
         <label for="name">Name: </label>
         <input type="text" name="name">
         <label for="type">Type: </label>
@@ -11,8 +11,8 @@
         <label for="location">Location: </label>
         <input type="text" name="location">
         <label for="comments">Comments: </label>
-        <textarea name="comments" form="new_plant" rows="4" cols="80"></textarea>
-        <a href="#">Cancel</a>
+        <textarea name="comments" form="garden_new" rows="4" cols="80"></textarea>
+        <a href="{{ url_for('showGardens') }}">Cancel</a>
         <input type="submit" name="Create" value="Create">
     </form>
 {% endblock %}

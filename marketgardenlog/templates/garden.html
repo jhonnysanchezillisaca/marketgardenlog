@@ -1,6 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Garden {{ garden.id }}{% endblock %}
+{% block title %}Garden {{ garden.name }}{% endblock %}
 {% block content %}
-    <h1>Garden {{ garden.id }}</h1>
-    <p>Shows the garden {{ garden.id }}</p>
+    <h1>Garden {{ garden.name }}</h1>
+    <div class="gardenActions">
+        <a href="{{ url_for('editGarden', garden_id=garden.id) }}">Edit garden</a>
+        <a href="{{ url_for('deleteGarden', garden_id=garden.id) }}">Delete Garden</a>
+        <a href="{{ url_for('newPlant', garden_id=garden.id)}}">Create a plant</a>
+    </div>
+    <p>Shows the garden {{ garden.name }}</p>
+    {% for plant in plants %}
+        <h3>{{ plant.name}}</h3>
+        <p>{{ plant.plant_type }}</p>
+        <div class="plantActions">
+            <a href="{{ url_for('editPlant', garden_id=garden.id, plant_id=plant.id) }}">Edit Plant</a>
+            <a href="{{ url_for('deletePlant', garden_id=garden.id, plant_id=plant.id) }}">Delete Plant</a>
+        </div>
+    {% endfor %}
 {% endblock %}
