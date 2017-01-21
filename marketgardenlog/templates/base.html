@@ -6,6 +6,10 @@
         {% endblock %}
     </head>
     <body>
+        <div class="navbar">
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
         <div id="content">{% block content %}{% endblock %}</div>
         <!-- <div id="footer">
             {% block footer %}
