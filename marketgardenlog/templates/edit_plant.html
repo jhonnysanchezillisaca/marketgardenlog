@@ -10,7 +10,7 @@
         <input type="text" name="type" value="{{ plant.plant_type }}">
         <label for="comments">Comments: </label>
         <textarea name="comments" form="plant_edit" rows="4" cols="80">{{ plant.comments }}</textarea>
-        <a href="{{url_for('showGarden', garden_id=plant.garden_id)}}">Cancel</a>
-        <input type="submit" name="Edit" value="Edit">
+        <a href="{{url_for('showGarden', garden_id=plant.garden_id)}}" class="btn btn-secondary">Cancel</a>
+        <input type="submit" name="Edit" value="Edit" class="btn btn-primary">
     </form>
 {% endblock %}

@@ -44,6 +44,8 @@ def gardenPlantsJSON(garden_id):
 @app.route('/gardens/')
 def showGardens():
     gardens = session.query(Garden).order_by(asc(Garden.created))
+    typesOfGardens = set([g.garden_type for g in gardens])
+    print typesOfGardens
     if 'username' not in login_session:
         return render_template('publicgardens.html', gardens=gardens)
     return render_template('gardens.html', gardens=gardens)
@@ -57,6 +59,20 @@ def showGarden(garden_id):
         return render_template('publicgarden.html',
                                garden=garden, plants=plants)
     return render_template('garden.html', garden=garden, plants=plants)
+
+
+@app.route('/gardens/<garden_type>/')
+def showGardenType(garden_type):
+    gardens = session.query(Garden).filter_by(garden_type=garden_type).all()
+    return render_template('gardenstypes.html', gardens=gardens,
+                           garden_type=garden_type)
+
+
+@app.route('/gardens/plants/<plant_type>/')
+def showPlantType(plant_type):
+    plants = session.query(Plant).filter_by(plant_type=plant_type).all()
+    return render_template('plantstypes.html', plants=plants,
+                           plant_type=plant_type)
 
 
 @app.route('/gardens/<int:garden_id>/edit/', methods=['GET', 'POST'])
@@ -83,7 +99,10 @@ def deleteGarden(garden_id):
         return redirect('login')
     garden = session.query(Garden).filter_by(id=garden_id).one()
     if request.method == 'POST':
-        session.delete(garden)
+        plants = session.query(Plant).filter_by(garden_id=garden_id).all()
+        for plant in plants:
+            session.delete(plant)
+            session.delete(garden)
         session.commit()
         flash('Garden Successfully Deleted')
         return redirect(url_for('showGardens'))
@@ -402,6 +421,24 @@ def logout():
     else:
         flash("You were not logged in")
         return redirect(url_for('showGardens'))
+
+
+# Perform queries with every request can affect the perfomance with more data
+# TODO: explore cache options
+@app.context_processor
+def injectTypesOfGardens():
+    return dict(typesOfGardens=typesOfGardens(),
+                typesOfPlants=typesOfPlants())
+
+
+def typesOfGardens():
+        gardens = session.query(Garden).order_by(asc(Garden.created))
+        return set([g.garden_type for g in gardens])
+
+
+def typesOfPlants():
+        plants = session.query(Plant).order_by(asc(Plant.date_planted))
+        return set([p.plant_type for p in plants])
 
 
 if __name__ == '__main__':

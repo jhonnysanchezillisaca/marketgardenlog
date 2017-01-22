@@ -1,11 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Gardens{% endblock %}
 {% block content %}
-    <h1>Gardens</h1>
-    <p>Shows some of the gardens</p>
-    <div class="gardens_actions">
-        <a href="{{ url_for('newGarden')}}" class="btn btn-success">Create a garden</a>
-    </div>
+    <h1>{{ garden_type }}</h1>
+
     {% for garden in gardens %}
         <h3><a href="{{ url_for('showGarden', garden_id=garden.id)}}">{{ garden.name }}</a></h3>
         <small>{{ garden.garden_type }}</small>

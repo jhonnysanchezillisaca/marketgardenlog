@@ -3,17 +3,17 @@
 {% block content %}
     <h1>Garden {{ garden.name }}</h1>
     <div class="gardenActions">
-        <a href="{{ url_for('editGarden', garden_id=garden.id) }}">Edit garden</a>
-        <a href="{{ url_for('deleteGarden', garden_id=garden.id) }}">Delete Garden</a>
-        <a href="{{ url_for('newPlant', garden_id=garden.id)}}">Create a plant</a>
+        <a href="{{ url_for('editGarden', garden_id=garden.id) }}" class="btn btn-primary">Edit garden</a>
+        <a href="{{ url_for('deleteGarden', garden_id=garden.id) }}" class="btn btn-danger">Delete Garden</a>
+        <a href="{{ url_for('newPlant', garden_id=garden.id)}}" class="btn btn-success">Create a plant</a>
     </div>
     <p>Shows the garden {{ garden.name }}</p>
     {% for plant in plants %}
         <h3>{{ plant.name}}</h3>
         <p>{{ plant.plant_type }}</p>
         <div class="plantActions">
-            <a href="{{ url_for('editPlant', garden_id=garden.id, plant_id=plant.id) }}">Edit Plant</a>
-            <a href="{{ url_for('deletePlant', garden_id=garden.id, plant_id=plant.id) }}">Delete Plant</a>
+            <a href="{{ url_for('editPlant', garden_id=garden.id, plant_id=plant.id) }}" class="btn btn-primary">Edit Plant</a>
+            <a href="{{ url_for('deletePlant', garden_id=garden.id, plant_id=plant.id) }}" class="btn btn-danger">Delete Plant</a>
         </div>
     {% endfor %}
 {% endblock %}
