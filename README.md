@@ -33,18 +33,16 @@ To obtain the Client ID and Secret you have to:
 2. In the app page click in "+ Add Product", and add Facebook Login.
 3. In the configuration of the product, in "Valid OAuth redirect URIs" add http://localhost:5000.
 4. From the dashboard of the app copy the Client ID and the Secret in a new json file called `fb_client_secrets.json` using the following format:
-```
-{
-"web": {
-"app_id": "PASTE_YOUR_APP_ID_HERE",
-"app_secret": "PASTE_YOUR_CLIENT_SECRET_HERE"
-    }
-}
-```
+        {
+        "web": {
+        "app_id": "PASTE_YOUR_APP_ID_HERE",
+        "app_secret": "PASTE_YOUR_CLIENT_SECRET_HERE"
+            }
+        }
 5. In the `login.html` file , in the Facebook login section replace the FACEBOOK_APP_ID_HERE with your app id.
 
-#### 2. Run the application
+#### 3. Run the application
 To run the application type ` $ python marketgardenlog.py `. Now the server is running and listening in port 5000.
 
-#### 3. Access the web page
+#### 4. Access the web page
 You can view the web page in your browser going to `http://localhost:5000`
