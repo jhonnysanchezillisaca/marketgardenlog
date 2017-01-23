@@ -22,7 +22,7 @@
     <div id="signinButton">
         <span class="g-signin"
         data-scope="openid email"
-        data-clientid="1013257726846-o013mdrk9t4ud5pnoce90vpeihpqk4fd.apps.googleusercontent.com"
+        data-clientid="GOOGLE_CLIENT_ID_HERE"
         data-redirecturi="postmessage"
         data-accesstype="offline"
         data-cookiepolicy="single_host_origin"
@@ -71,7 +71,7 @@ function signInCallback(authResult) {
         <script>
           window.fbAsyncInit = function() {
           FB.init({
-            appId      : '1751308718520215',
+            appId      : 'FACEBOOK_APP_ID_HERE',
             cookie     : true,  // enable cookies to allow the server to access
                                 // the session
             xfbml      : true,  // parse social plugins on this page
@@ -86,8 +86,7 @@ function signInCallback(authResult) {
             js.src = "//connect.facebook.net/en_US/sdk.js";
             fjs.parentNode.insertBefore(js, fjs);
           }(document, 'script', 'facebook-jssdk'));
-          // Here we run a very simple test of the Graph API after login is
-          // successful.  See statusChangeCallback() for when this call is made.
+          // Here we run a very simple test of the Graph API after login is successful.
           function sendTokenToServer() {
             var access_token = FB.getAuthResponse()['accessToken'];
             console.log(access_token)
