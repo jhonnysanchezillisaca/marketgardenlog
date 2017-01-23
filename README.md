@@ -15,8 +15,6 @@ Once started and logged in the vagrant machine, go to ``/vagrant/marketgardenlog
 #### 1. Create the database
 To create de DB schema you need to execute ``` $ python database_setup.py ```
 
-# TODO: add the information to crate the client secrets files.
-
 #### 2. Authentication services secrets
 For the authentication system to work you need to create a Client ID and Secret and save it in a json file.
 
