@@ -40,12 +40,17 @@ def gardenPlantsJSON(garden_id):
     return jsonify(Plants=[i.serialize for i in plants])
 
 
+@app.route('/gardens/<int:garden_id>/<int:plant_id>/JSON')
+def gardenPlantJSON(garden_id, plant_id):
+    plant = session.query(Plant).filter_by(id=plant_id).one()
+    return jsonify(Plant=plant.serialize)
+
+
 @app.route('/')
 @app.route('/gardens/')
 def showGardens():
     gardens = session.query(Garden).order_by(asc(Garden.created))
     typesOfGardens = set([g.garden_type for g in gardens])
-    print typesOfGardens
     if 'username' not in login_session:
         return render_template('publicgardens.html', gardens=gardens)
     return render_template('gardens.html', gardens=gardens)
@@ -81,6 +86,9 @@ def editGarden(garden_id):
     if 'username' not in login_session:
         return redirect('login')
     garden = session.query(Garden).filter_by(id=garden_id).one()
+    if login_session['username'] != garden.user.name:
+        flash('Only the creator can edit this garden.')
+        return redirect(url_for('showGarden', garden_id=garden_id))
     if request.method == 'POST':
         if request.form['name']:
             garden.name = request.form['name']
@@ -99,11 +107,15 @@ def deleteGarden(garden_id):
     if 'username' not in login_session:
         return redirect('login')
     garden = session.query(Garden).filter_by(id=garden_id).one()
+    if login_session['username'] != garden.user.name:
+        flash('Only the creator can delete this garden.')
+        return redirect(url_for('showGarden', garden_id=garden_id))
+
     if request.method == 'POST':
         plants = session.query(Plant).filter_by(garden_id=garden_id).all()
         for plant in plants:
             session.delete(plant)
-            session.delete(garden)
+        session.delete(garden)
         session.commit()
         flash('Garden Successfully Deleted')
         return redirect(url_for('showGardens'))
@@ -133,6 +145,11 @@ def newGarden():
 def newPlant(garden_id):
     if 'username' not in login_session:
         return redirect('login')
+    garden = session.query(Garden).filter_by(id=garden_id).one()
+    if login_session['username'] != garden.user.name:
+        flash('Only the creator can create a plant in this garden.')
+        return redirect(url_for('showGarden', garden_id=garden_id))
+
     if request.method == 'POST':
         new_plant = Plant(name=request.form['name'],
                           plant_type=request.form['type'],
@@ -151,6 +168,10 @@ def editPlant(garden_id, plant_id):
     if 'username' not in login_session:
         return redirect('login')
     plant = session.query(Plant).filter_by(id=plant_id).one()
+    if login_session['username'] != plant.user.name:
+        flash('Only the creator can edit this plant.')
+        return redirect(url_for('showGarden', garden_id=garden_id))
+
     if request.method == 'POST':
         print "Inside POST"
         if request.form['name']:
@@ -175,8 +196,31 @@ def editPlant(garden_id, plant_id):
         return render_template('edit_plant.html', plant=plant)
 
 
+@app.route('/gardens/<int:garden_id>/<int:plant_id>/delete/',
+           methods=['GET', 'POST'])
+def deletePlant(garden_id, plant_id):
+    if 'username' not in login_session:
+        return redirect('login')
+    plant = session.query(Plant).filter_by(id=plant_id).one()
+    if login_session['username'] != plant.user.name:
+        flash('Only the creator can delete this plant.')
+        return redirect(url_for('showGarden', garden_id=garden_id))
+
+    if request.method == 'POST':
+        session.delete(plant)
+        session.commit()
+        return redirect(url_for('showGarden', garden_id=garden_id))
+    else:
+        return render_template('delete_plant.html', plant=plant)
+
+
 # User Helper Functions
 def createUser(login_session):
+    """
+    createUser: stores a user in the DB with the data from the parameter
+    Args:
+        login_session: the data to create the user
+    """
     newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
     session.add(newUser)
@@ -186,30 +230,31 @@ def createUser(login_session):
 
 
 def getUserInfo(user_id):
+    """
+    getUserInfo: returns the user object from the DB with the id from the
+    parameter
+    Args:
+        user_id (data type: int): the id of the user to return
+    Returns:
+        return the user object
+    """
     user = session.query(User).filter_by(id=user_id).one()
     return user
 
 
 def getUserID(email):
+    """
+    getUserID: returns the id of user with the email from the parameter
+    Args:
+        email (data type: String): the email of the user to return
+    Returns:
+        return the id of the user
+    """
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
     except:
         return None
-
-
-@app.route('/gardens/<int:garden_id>/<int:plant_id>/delete/',
-           methods=['GET', 'POST'])
-def deletePlant(garden_id, plant_id):
-    if 'username' not in login_session:
-        return redirect('login')
-    plant = session.query(Plant).filter_by(id=plant_id).one()
-    if request.method == 'POST':
-        session.delete(plant)
-        session.commit()
-        return redirect(url_for('showGarden', garden_id=garden_id))
-    else:
-        return render_template('delete_plant.html', plant=plant)
 
 
 @app.route('/login')
@@ -433,16 +478,25 @@ def injectTypesOfGardens():
 
 
 def typesOfGardens():
-        gardens = session.query(Garden).order_by(asc(Garden.created))
-        return set([g.garden_type for g in gardens])
+    """
+    typesOfGardens: returns a set with the types of gardens present in the DB
+    Returns:
+        return a set of Strings with the types of gardens
+    """
+    gardens = session.query(Garden).order_by(asc(Garden.created))
+    return set([g.garden_type for g in gardens])
 
 
 def typesOfPlants():
-        plants = session.query(Plant).order_by(asc(Plant.date_planted))
-        return set([p.plant_type for p in plants])
+    """
+    typesOfPlants: returns a set with the types of plants present in the DB
+    Returns:
+        return a set of Strings with the types of plants
+    """
+    plants = session.query(Plant).order_by(asc(Plant.date_planted))
+    return set([p.plant_type for p in plants])
 
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
-    app.debug = True
     app.run(host='0.0.0.0', port=5000)
