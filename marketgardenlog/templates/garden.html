@@ -1,12 +1,23 @@
 {% extends "base.html" %}
 {% block title %}Garden {{ garden.name }}{% endblock %}
 {% block content %}
-    <h1>Garden {{ garden.name }}</h1>
+    <div class="row banner menu">
+        <div class="col-md-11  padding-none">
+            <h1>{{ garden.name }}
+            <figure class="creator">
+                <img src="{{ creator.picture}}">
+                <figcaption>{{ creator.name }}</figcaption>
+            </figure>
+            </h1>
+
+        </div>
+    </div>
     <div class="gardenActions">
         <a href="{{ url_for('editGarden', garden_id=garden.id) }}" class="btn btn-primary">Edit garden</a>
         <a href="{{ url_for('deleteGarden', garden_id=garden.id) }}" class="btn btn-danger">Delete Garden</a>
         <a href="{{ url_for('newPlant', garden_id=garden.id)}}" class="btn btn-success">Create a plant</a>
     </div>
+
     <p>Shows the garden {{ garden.name }}</p>
     {% for plant in plants %}
         <h3>{{ plant.name}}</h3>

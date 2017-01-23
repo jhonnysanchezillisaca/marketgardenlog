@@ -1,15 +1,21 @@
 {% extends "base.html" %}
-{% block title %}Edit plant {{ plant.id }}{% endblock %}
+{% block title %}Edit plant {{ plant.name }}{% endblock %}
 {% block content %}
-    <h1>Edit plant {{ plant.id }}</h1>
-    <p>Editing plant {{ plant.id }} in garden {{ plant.garden_id }}</p>
+    <h1>Edit {{ plant.name }}</h1>
+    <p>Editing {{ plant.name }} in {{ plant.garden.name }}</p>
     <form method="post" id="plant_edit">
-        <label for="name">Name: </label>
-        <input type="text" name="name" value="{{ plant.name }}">
-        <label for="type">Type: </label>
-        <input type="text" name="type" value="{{ plant.plant_type }}">
-        <label for="comments">Comments: </label>
-        <textarea name="comments" form="plant_edit" rows="4" cols="80">{{ plant.comments }}</textarea>
+        <div class="form-group">
+            <label for="name">Name: </label>
+            <input type="text" name="name" value="{{ plant.name }}">
+        </div>
+        <div class="form-group">
+            <label for="type">Type: </label>
+            <input type="text" name="type" value="{{ plant.plant_type }}">
+        </div>
+        <div class="fomr-group">
+            <label for="comments">Comments: </label>
+            <textarea name="comments" form="plant_edit" rows="4" cols="80">{{ plant.comments }}</textarea>
+        </div>
         <a href="{{url_for('showGarden', garden_id=plant.garden_id)}}" class="btn btn-secondary">Cancel</a>
         <input type="submit" name="Edit" value="Edit" class="btn btn-primary">
     </form>

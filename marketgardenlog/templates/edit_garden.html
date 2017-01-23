@@ -1,17 +1,26 @@
 {% extends "base.html" %}
-{% block title %}Edit Garden {{ garden.id }}{% endblock %}
+{% block title %}Edit {{ garden.name }}{% endblock %}
 {% block content %}
-    <h1>Edit Garden {{ garden.id }}</h1>
-    <p>Editing garden {{ garden.id }}</p>
+    <h1>Edit {{ garden.name }}</h1>
+    <p>Editing {{ garden.name }}</p>
     <form method="post" id="garden_edit">
-        <label for="name">Name: </label>
-        <input type="text" name="name" value="{{ garden.name }}">
-        <label for="type">Type: </label>
-        <input type="text" name="type" value="{{ garden.garden_type }}">
-        <label for="location">Location: </label>
-        <input type="text" name="location" value="{{ garden.location }}">
-        <label for="comments">Comments: </label>
-        <textarea name="comments" form="garden_edit" rows="4" cols="80"></textarea>
+        <div class="form-group">
+            <label for="name">Name: </label>
+            <input type="text" name="name" value="{{ garden.name }}">
+        </div>
+        <div class="form-group">
+            <label for="type">Type: </label>
+            <input type="text" name="type" value="{{ garden.garden_type }}">
+        </div>
+        <div class="form-group">
+            <label for="location">Location: </label>
+            <input type="text" name="location" value="{{ garden.location }}">
+        </div>
+        <div class="form-group">
+            <label for="comments">Comments: </label>
+            <textarea name="comments" form="garden_edit" rows="4" cols="80"></textarea>
+        </div>
+
         <a href="{{url_for('showGarden', garden_id=garden.id)}}" class="btn btn-secondary">Cancel</a>
         <input type="submit" name="Edit" value="Edit" class="btn btn-primary">
     </form>

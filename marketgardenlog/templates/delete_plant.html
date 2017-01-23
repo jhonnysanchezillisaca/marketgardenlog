@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Delete plant {{ plant.id }}{% endblock %}
 {% block content %}
-    <h1>Delete plant {{ plant.id }}</h1>
-    <p>Are you sure you want to delete {{ plant.id }} from garden {{ plant.garden_id }}?</p>
+    <h1>Delete {{ plant.name }}</h1>
+    <p>Are you sure you want to delete {{ plant.name }} from garden {{ plant.garden_id }}?</p>
     <form method="post">
         <a href="{{url_for('showGarden', garden_id=plant.garden_id)}}" class="btn btn-primary">Cancel</a>
         <input type="submit" name="Delete" value="Delete" class="btn btn-danger">

@@ -58,7 +58,8 @@ def showGarden(garden_id):
     if 'username' not in login_session:
         return render_template('publicgarden.html',
                                garden=garden, plants=plants)
-    return render_template('garden.html', garden=garden, plants=plants)
+    return render_template('garden.html', garden=garden, plants=plants,
+                           creator=garden.user)
 
 
 @app.route('/gardens/<garden_type>/')
